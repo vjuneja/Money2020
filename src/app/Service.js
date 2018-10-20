@@ -4,7 +4,7 @@ import  {cobrandLoginRequest, userLoginRequest} from './YodleeRequests'
 export default class YodleeService {
 
     getAccounts(){
-        axios.get('https://www.google.com')
+        axios.get('')
   .then(response => {
     console.log(response.data.url);
     console.log(response.data.explanation);
@@ -16,4 +16,4 @@ export default class YodleeService {
     }
 }
 
-new YodleeService().getAccounts()
+// new YodleeService().getAccounts()
