@@ -39,7 +39,7 @@ function createBankAsset(startDate, days, startingBalance) {
         })
 
     }
-    // Add patterns
+    // Add recurring transactions
     addManualTransaction(balances, '2018-10-05', 1500, 30);
     addManualTransaction(balances, '2018-10-03', -300, 14);
     addManualTransaction(balances, '2018-10-02', -50, 7);
@@ -56,7 +56,7 @@ function addManualTransaction(balances, date, amount, interval) {
     balances.forEach((ele, index) => {
         // We really shouldn't have values smaller than days
         var dateDiffInDays = Math.trunc(Math.round((new Date(ele.date) - new Date(date)) / 1000 / 60 / 60 / 24));
-        if (dateDiffInDays === 0 || (dateDiffInDays > 0 && dateDiffInDays % interval === 0)) {
+        if (dateDiffInDays >= 0 && dateDiffInDays % interval === 0) {
             currChange += amount;
         }
         ele.balance.amount += currChange;
