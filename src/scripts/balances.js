@@ -52,13 +52,13 @@ function createBankAsset(startDate, days, startingBalance) {
 }
 
 function addManualTransaction(balances, date, amount, interval) {
+    var currChange = 0;
     balances.forEach((ele, index) => {
         // We really shouldn't have values smaller than days
         var dateDiffInDays = Math.trunc(Math.round((new Date(ele.date) - new Date(date)) / 1000 / 60 / 60 / 24));
         if (dateDiffInDays === 0 || (dateDiffInDays > 0 && dateDiffInDays % interval === 0)) {
-            // Pass in negative value if it's debit
-            ele.balance.amount = index > 0 ? balances[index - 1].balance.amount : ele.balance.amount;
-            ele.balance.amount += amount;
+            currChange += amount;
         }
+        ele.balance.amount += currChange;
     });
 }
