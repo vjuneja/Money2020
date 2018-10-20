@@ -1,23 +1,21 @@
 import { getAccountBalances } from '../data/account-balance.js'
 
-function getTotalBalance(fromDate, toDate, accountId) {
-    const accountBalances = getAccountBalances();
+export const getTotalBalance = (fromDate, toDate, accountId) => {
+    const accountBalances = getAccountBalances(fromDate, toDate, accountId);
     
     // Aggregate into total by date
-    const aggregatedData = []
-    
-    const count =  accountBalances.account[0].balances.length
-    
-    for (let i= 0; i < count; i++) {
-        aggregatedData.push(0)
-        accountBalances.account.forEach(account => {
-            const currentBalance = account.balances[i].balance.amount
-            if (account.isAsset) aggregatedData[i] += currentBalance
-            else aggregatedData[i] -= currentBalance
+    const aggregatedData = {}
+    accountBalances.account.forEach(account => {
+        account.balances.forEach(balance => {
+            const currentBalance = account.isAsset ? balance.balance.amount : -balance.balance.amount
+            if (aggregatedData[balance.date]) {
+                aggregatedData[balance.date] += currentBalance
+            } else {
+                aggregatedData[balance.date] = currentBalance
+            }
         })
-    }
+    })
     return aggregatedData
-
 }
 
 function addManualTransaction(date, amount, interval) {
