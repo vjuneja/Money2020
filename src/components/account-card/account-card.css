@@ -1,0 +1,8 @@
+.account-card {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.account-card:last-child {
+    margin-bottom: 0;
+}
