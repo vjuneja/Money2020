@@ -1,27 +1,28 @@
-import { getAccountBalances } from '../data/account-balance.js'
 
-function getTotalBalance(fromDate, toDate, accountId) {
-    const accountBalances = getAccountBalances();
+export const getTotalBalance = (fromDate, toDate, accountId) => {
+    const accountBalances = createDataSet(fromDate, toDate, accountId);
     
     // Aggregate into total by date
-    const aggregatedData = []
-    
-    const count =  accountBalances.account[0].balances.length
-    
-    for (let i= 0; i < count; i++) {
-        aggregatedData.push(0)
-        accountBalances.account.forEach(account => {
-            const currentBalance = account.balances[i].balance.amount
-            if (account.isAsset) aggregatedData[i] += currentBalance
-            else aggregatedData[i] -= currentBalance
+    const aggregatedData = {}
+    accountBalances.account.forEach(account => {
+        account.balances.forEach(balance => {
+            const currentBalance = account.isAsset ? balance.balance.amount : -balance.balance.amount
+            if (aggregatedData[balance.date]) {
+                aggregatedData[balance.date] += currentBalance
+            } else {
+                aggregatedData[balance.date] = currentBalance
+            }
         })
-    }
+    })
     return aggregatedData
-
 }
 
-function createDataSet() {
-    
+function createDataSet(fromDate) {
+    return {
+        'account': [
+            createBankAsset(fromDate, 100, 1000)
+        ]
+    }
 }
 
 function createBankAsset(startDate, days, startingBalance) {
@@ -51,11 +52,12 @@ function createBankAsset(startDate, days, startingBalance) {
 }
 
 function addManualTransaction(balances, date, amount, interval) {
-    balances.forEach(ele => {
+    balances.forEach((ele, index) => {
         // We really shouldn't have values smaller than days
-        var dateDiffInDays = Math.round((new Date(date) - new Date(ele.date))) / 1000 / 60 / 60 / 24;
-        if (dateDiffInDays % interval === 0) {
+        var dateDiffInDays = Math.trunc(Math.round((new Date(ele.date) - new Date(date)) / 1000 / 60 / 60 / 24));
+        if (dateDiffInDays === 0 || (dateDiffInDays > 0 && dateDiffInDays % interval === 0)) {
             // Pass in negative value if it's debit
+            ele.balance.amount = index > 0 ? balances[index - 1].balance.amount : ele.balance.amount;
             ele.balance.amount += amount;
         }
     });
