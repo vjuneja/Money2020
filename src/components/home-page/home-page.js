@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import Service from "../../app/Service"
 
 class HomePage extends Component {
   constructor() {
@@ -9,9 +7,6 @@ class HomePage extends Component {
     this.state = {
       title: "homepage"
     };
-  }
-  componentDidMount() {
-    new Service().getAccounts()
   }
 
   render() {
