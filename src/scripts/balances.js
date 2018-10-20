@@ -20,9 +20,38 @@ function getTotalBalance(fromDate, toDate, accountId) {
 
 }
 
-function addManualTransaction(date, amount, interval) {
-    var currentBalance = getTotalBalance();
-    currentBalance.forEach(ele => {
+function createDataSet() {
+    
+}
+
+function createBankAsset(startDate, days, startingBalance) {
+    var balances = [];
+    for (var i = 0; i < days; i++) {
+        var date = new Date(startDate);
+        date.setDate(date.getDate() + i);
+        balances.push({
+            'date': date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate(),
+            'balance': {
+                'amount': startingBalance,
+                'currency': 'USD'
+            }
+        })
+
+    }
+    // Add patterns
+    addManualTransaction(balances, '2018-10-05', 1500, 30);
+    addManualTransaction(balances, '2018-10-03', -300, 14);
+    addManualTransaction(balances, '2018-10-02', -50, 7);
+    return {
+        'CONTAINER': 'bank',
+        'id': 11888813,
+        'isAsset': true,
+        'balances': balances
+    }
+}
+
+function addManualTransaction(balances, date, amount, interval) {
+    balances.forEach(ele => {
         // We really shouldn't have values smaller than days
         var dateDiffInDays = Math.round((new Date(date) - new Date(ele.date))) / 1000 / 60 / 60 / 24;
         if (dateDiffInDays % interval === 0) {
@@ -30,5 +59,4 @@ function addManualTransaction(date, amount, interval) {
             ele.balance.amount += amount;
         }
     });
-    return currentBalance;
 }
