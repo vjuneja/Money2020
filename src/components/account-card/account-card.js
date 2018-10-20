@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import "./account-card.css"
 
 const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -16,8 +17,8 @@ class AccountCard extends Component {
     const { name, num, amount } = this.props
     return (
         <div className="account-card">
-            <h6><b>{name}</b>...x-{num.padStart('0')}</h6>
-            <h4>{formatter.format(amount)}</h4>
+            <div className="mui--text-caption"><b>{name}</b>...x-{num.padStart(4, '0')}</div>
+            <div className="mui--text-title">{formatter.format(amount)}</div>
         </div>
     );
   }

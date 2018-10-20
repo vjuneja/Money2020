@@ -9,7 +9,8 @@ class Account extends Component {
 
   render() {
     return (
-    <div className="account-card">
+    <div className="mui-container">
+        <div class="mui--text-headline">Accounts</div>
         {this.props.accounts.map(a =>(
             <AccountCard
                 key={a.id}
