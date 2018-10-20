@@ -1,4 +1,4 @@
-import settings from './Setings.json'
+import { settings } from './Settings'
 
 function cobrandLoginRequest(){
     return {
