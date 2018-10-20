@@ -1,46 +1,43 @@
-import settings from 'settings.json'
+import { settings } from './Settings'
 
-function cobrandLoginRequest() {
+function cobrandLoginRequest(){
     return {
-        url: settings.yodleeEndpoint,
-        queryParams:[],
-        headers: [
-            ["Content-Type","application/json"],
-            ["Api-Version","1.1"],
-            ["Cobrand-Name",settings.cobrandName]
-        ],
-        body: {
+        "method":"POST",
+        "baseURL": settings.yodlee.endpoint,
+        "headers": {
+            "Content-Type":"application/json",
+            "Api-Version": "1.1",
+            "Cobrand-Name": settings.yodlee.cobrandName
+        },
+        "body": {
             "cobrand":{
-                "cobrandLogin":settings.cobrandLogin,
-                "cobrandPassword":settings.cobrandPassword,
+                "cobrandLogin":settings.yodlee.cobrandLogin,
+                "cobrandPassword":settings.yodlee.cobrandPassword,
                 "locale":"en_US"
             }
         }
     }
 }
+
 
 function userLoginRequest(cobrandSession) {
     return {
-        url: settings.yodleeEndpoint,
-        queryParams:[],
-        headers: [
-            ["Content-Type","application/json"],
-            ["Api-Version","1.1"],
-            ["Cobrand-Name",settings.cobrandName]
-        ],
-        body: {
+        "method":"POST",
+        "baseURL": settings.yodlee.endpoint,
+        "headers": {
+            "Authorization":`cobSession=${cobrandSession}`,
+            "Content-Type":"application/json",
+            "Api-Version": "1.1",
+            "Cobrand-Name": settings.yodlee.cobrandName
+        },
+        "body": {
             "user":{
-                "loginName":settings.loginName,
-                "password":"{{password}}",
+                "loginName":settings.yodlee.userLogin,
+                "password":settings.yodlee.userPassword,
                 "locale":"en_US"
             }
         }
     }
 }
 
-function accountBalanceRequest(userToken, from, to) {
-
-}
-
-
-export { cobrandLoginRequest, userLoginRequest, accountBalanceRequest }
+export {cobrandLoginRequest, userLoginRequest}
