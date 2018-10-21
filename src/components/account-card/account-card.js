@@ -14,9 +14,9 @@ class AccountCard extends Component {
   }
 
   render() {
-    const { name, num, amount } = this.props
+    const { name, num, amount, ...rest } = this.props
     return (
-        <div className="account-card">
+        <div className="account-card" {...rest}>
             <div className="mui--text-caption"><b>{name}</b>...x-{num.padStart(4, '0')}</div>
             <div className="mui--text-title">{formatter.format(amount)}</div>
         </div>

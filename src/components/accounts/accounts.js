@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import AccountCard from '../account-card'
+import { routeTo } from '../router/router'
 
 class Account extends Component {
   constructor() {
@@ -13,6 +14,7 @@ class Account extends Component {
         <div class="mui--text-headline">Accounts</div>
         {this.props.accounts.map(a =>(
             <AccountCard
+                onClick={routeTo("account", { id: a.id })}
                 key={a.id}
                 name={a.name}
                 num={a.number}
