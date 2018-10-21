@@ -1,14 +1,13 @@
+const apiClient = require('api-client')
 
 /**
  * Get aggregated totals of all account balances.
  * 
- * @param {*} fromDate 
- * @param {*} days
  */
-export const getTotalBalance = (fromDate, days) => {
+async function getTotalBalance(fromDate, toDate) {
 
     // TODO Get this from service API
-    const accountBalances = getAccountBalances(fromDate, days);
+    const accountBalances = await getAccountBalances(fromDate, toDate);
 
     // Aggregate into total by date
     const aggregatedData = {}
@@ -28,19 +27,12 @@ export const getTotalBalance = (fromDate, days) => {
 /**
  * Get account info and balances for all accounts for the user.
  * 
- * @param {*} fromDate 
- * @param {*} days 
  */
-export const getAccountBalances = (fromDate, days) => {
+async function getAccountBalances(fromDate, toDate) {
     // Result of calling /accounts for account info
-    var getAccountsResult = getAccounts();
-    // Result of calling GetAccountBalance without account id
-    var getAccountBalanceResult = {
-        'account': [
-            createBankAsset(11888813, fromDate, days, 1000)
-        ]
-    };
-    var getRecurringEventsResult = getRecurringEvents();
+    var getAccountsResult = await getAccounts();
+    var getAccountBalanceResult = await getAccountBalances(fromDate, toDate);
+    var getRecurringEventsResult = await getRecurringEvents();
     // Merge account details, balances, and recurring events into account
     getAccountsResult.account.forEach(account => {
         var accountId = account.id;
@@ -63,47 +55,16 @@ function findAccountElement(result, accountId) {
     });
 }
 
-function getAccounts() {
-    // Result of calling /accounts for info on all user accounts
-    return {
-        'account': [
-            {
-                "accountName": 'Platinum Money Market',
-                'accountNumber': 'xxxx9929',
-                'id': 11888813,
-                'accountType': 'MONEY_MARKET'
-            }
-        ]
-    };
+async function getAccounts() {
+    return await apiClient.getAccounts();
 }
 
-function getRecurringEvents() {
-    // Result of calling accounts/recurringEvents.
-    // These are the properties we care about
-    return {
-        'account': [
-            {
-                'id': 11888813,
-                'recurringEvents': [
-                    createRecurringEvent(143.77, 'VERIZON*RECURRING PAY', '2018-09-29', 'SEMI_MONTHLY')
-                ]
-            }
-        ]
-    }
+async function getAccountBalances(fromDate, toDate) {
+    return await getBalances(fromDate, toDate);
 }
 
-function createRecurringEvent(amount, name, date, frequency) {
-    return {
-        'amount': {
-            'amount': Math.abs(amount)
-        },
-        'categoryType': amount < 0 ? 'EXPENSE' : 'INCOME',
-        'description': {
-            'simple': name
-        },
-        'startDate': date,
-        'frequency': frequency
-    }
+async function getRecurringEvents() {
+    return await apiClient.getRecurringEvents();
 }
 
 /**
@@ -116,7 +77,7 @@ function createRecurringEvent(amount, name, date, frequency) {
  * @param {*} amount 
  * @param {*} interval 
  */
-export const addManualTransaction = (account, date, amount, interval) => {
+async function addManualTransaction(account, date, amount, interval) {
     var accountCopy = Object.assign(account, {});
     var currChange = 0;
     accountCopy.balances.forEach((ele) => {
@@ -130,29 +91,8 @@ export const addManualTransaction = (account, date, amount, interval) => {
     return accountCopy;
 }
 
-function createBankAsset(accountId, startDate, days, startingBalance) {
-    var account = {
-        'CONTAINER': 'bank',
-        'id': accountId,
-        'isAsset': true,
-    };
-    var balances = [];
-    for (var i = 0; i < days; i++) {
-        var date = new Date(startDate);
-        date.setDate(date.getDate() + i);
-        balances.push({
-            'date': date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate(),
-            'balance': {
-                'amount': startingBalance,
-                'currency': 'USD'
-            }
-        })
-
-    }
-    account.balances = balances;
-    // Add recurring transactions
-    account = addManualTransaction(account, '2018-10-05', 1500, 30);
-    account = addManualTransaction(account, '2018-10-03', -1000, 14);
-    account = addManualTransaction(account, '2018-10-02', -50, 7);
-    return account;
+module.exports = {
+    getAccountBalances: getAccountBalances,
+    getTotalBalance: getTotalBalance,
+    addManualTransaction: addManualTransaction
 }
