@@ -115,6 +115,6 @@ export async function cancelRecurringTransaction(account, recurringEvent) {
     const { amount, lastTransactionDate, frequency, merchant} = recurringEvent
     const days = frequency == 'DAILY' ? 1 : frequency == 'WEEKLY' ? 7 : frequency == 'SEMI_MONTHLY' ? 14 : 30;
     const startDate = frequency == 'MONTHLY' ? moment(lastTransactionDate).add(1, 'months') : moment(lastTransactionDate).add(days, 'days');
-    cancelVisaTransaction(account.accountNumber, merchant.id, merchant.name)
-    return addManualTransaction(account, startDate, amount.amount, days);
+    await cancelVisaTransaction(account.accountNumber, merchant.id, merchant.name)
+    return await addManualTransaction(account, startDate, amount.amount, days);
 }
