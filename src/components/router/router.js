@@ -1,5 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import querystring from 'query-string';
+
+export const routeTo = (routeName, params ) => () => {
+  const qs = querystring.stringify(params)
+  window.location.hash = routeName + (qs ? '&' + qs : '')
+}
 
 class Router extends Component {
   constructor() {
