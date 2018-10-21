@@ -119,8 +119,8 @@ class Chart extends Component {
 }
 
 Chart.propTypes = {
-    chartData: PropTypes.string,
-    aggregateChartData: PropTypes.string
+    chartData: PropTypes.object,
+    aggregateChartData: PropTypes.object
 }
 
 export default Chart;
