@@ -85,20 +85,24 @@ function getRecurringEvents() {
             {
                 'id': 11888813,
                 'recurringEvents': [
-                    {
-                        'amount': {
-                            'amount': 143.77
-                        },
-                        'categoryType': 'EXPENSE',
-                        'description': {
-                            'simple': 'VERIZON*RECURRING PAY'
-                        },
-                        'startDate': '2018-09-29',
-                        'frequency': 'SEMI_MONTHLY'
-                    }
+                    createRecurringEvent(143.77, 'VERIZON*RECURRING PAY', '2018-09-29', 'SEMI_MONTHLY')
                 ]
             }
         ]
+    }
+}
+
+function createRecurringEvent(amount, name, date, frequency) {
+    return {
+        'amount': {
+            'amount': Math.abs(amount)
+        },
+        'categoryType': amount < 0 ? 'EXPENSE' : 'INCOME',
+        'description': {
+            'simple': name
+        },
+        'startDate': date,
+        'frequency': frequency
     }
 }
 
