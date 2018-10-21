@@ -1,7 +1,15 @@
 
-export const getTotalBalance = (fromDate, toDate, accountId) => {
-    const accountBalances = createDataSet(fromDate, toDate, accountId);
-    
+/**
+ * Get aggregated totals of all account balances.
+ * 
+ * @param {*} fromDate 
+ * @param {*} days
+ */
+export const getTotalBalance = (fromDate, days) => {
+
+    // TODO Get this from service API
+    const accountBalances = getAccountBalances();
+
     // Aggregate into total by date
     const aggregatedData = {}
     accountBalances.account.forEach(account => {
@@ -17,15 +25,99 @@ export const getTotalBalance = (fromDate, toDate, accountId) => {
     return aggregatedData
 }
 
-function createDataSet(fromDate) {
+/**
+ * Get account info and balances for all accounts for the user.
+ * 
+ * @param {*} fromDate 
+ * @param {*} days 
+ */
+export const getAccountBalances = (fromDate, days) => {
+    // Result of calling /accounts for account info
+    var getAccountsResult = getAccounts();
+    // Result of calling GetAccountBalance without account id
+    var getAccountBalanceResult = {
+        'account': [
+            createBankAsset(11888813, fromDate, days, 1000)
+        ]
+    };
+    var getRecurringEventsResult = getRecurringEvents();
+    // Merge account details, balances, and recurring events into account
+    for (var account in getAccountsResult.account) {
+        var accountBalances = findAccountElement(getAccountBalanceResult, accountId);
+        if (accountBalances) {
+            account.balances = accountBalances.balances;
+            account.isAsset = accountBalances.isAsset;
+        }
+        var accountRecurringEvents = findAccountElement(getRecurringEventsResult, accountId);
+        if (accountRecurringEvents) {
+            account.recurringEvents = accountRecurringEvents.recurringEvents;
+        }
+    }
+
+}
+
+function findAccountElement(result, accountId) {
+    for (var account in getAccountBalanceResult.account) {
+        if (account.id == accountId) {
+            return account;
+        }
+    }
+}
+
+function getAccounts() {
+    // Result of calling /accounts for info on all user accounts
     return {
         'account': [
-            createBankAsset(fromDate, 100, 1000)
+            {
+                "accountName": 'Platinum Money Market',
+                'accountNumber': 'xxxx9929',
+                'id': 11888813,
+                'accountType': 'MONEY_MARKET'
+            }
+        ]
+    };
+}
+
+function getRecurringEvents() {
+    // Result of calling accounts/recurringEvents.
+    // These are the properties we care about
+    return {
+        'account': [
+            {
+                'id': 11888813,
+                'recurringEvents': [
+                    {
+                        'amount': {
+                            'amount': 143.77
+                        },
+                        'categoryType': 'EXPENSE',
+                        'description': {
+                            'simple': 'VERIZON*RECURRING PAY'
+                        },
+                        'startDate': '2018-09-29',
+                        'frequency': 'SEMI_MONTHLY'
+                    }
+                ]
+            }
         ]
     }
 }
 
-function createBankAsset(startDate, days, startingBalance) {
+export const addManualTransaction = (account, date, amount, interval) => {
+    var balancesCopy = balances.slice();
+    var currChange = 0;
+    balancesCopy.forEach((ele) => {
+        // We really shouldn't have values smaller than days
+        var dateDiffInDays = Math.trunc(Math.round((new Date(ele.date) - new Date(date)) / 1000 / 60 / 60 / 24));
+        if (dateDiffInDays >= 0 && dateDiffInDays % interval === 0) {
+            currChange += amount;
+        }
+        ele.balance.amount += currChange;
+    });
+    return balancesCopy;
+}
+
+function createBankAsset(accountId, startDate, days, startingBalance) {
     var balances = [];
     for (var i = 0; i < days; i++) {
         var date = new Date(startDate);
@@ -40,25 +132,13 @@ function createBankAsset(startDate, days, startingBalance) {
 
     }
     // Add recurring transactions
-    addManualTransaction(balances, '2018-10-05', 1500, 30);
-    addManualTransaction(balances, '2018-10-03', -300, 14);
-    addManualTransaction(balances, '2018-10-02', -50, 7);
+    balances = addManualTransaction(balances, '2018-10-05', 1500, 30);
+    balances = addManualTransaction(balances, '2018-10-03', -300, 14);
+    balances = addManualTransaction(balances, '2018-10-02', -50, 7);
     return {
         'CONTAINER': 'bank',
-        'id': 11888813,
+        'id': accountId,
         'isAsset': true,
         'balances': balances
     }
-}
-
-function addManualTransaction(balances, date, amount, interval) {
-    var currChange = 0;
-    balances.forEach((ele, index) => {
-        // We really shouldn't have values smaller than days
-        var dateDiffInDays = Math.trunc(Math.round((new Date(ele.date) - new Date(date)) / 1000 / 60 / 60 / 24));
-        if (dateDiffInDays >= 0 && dateDiffInDays % interval === 0) {
-            currChange += amount;
-        }
-        ele.balance.amount += currChange;
-    });
 }
