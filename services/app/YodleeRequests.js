@@ -1,15 +1,16 @@
-import { settings } from './Settings'
+const settings = require('./Settings')
 
 function cobrandLoginRequest(){
     return {
         "method":"POST",
         "baseURL": settings.yodlee.endpoint,
+        "url":"/cobrand/login",
         "headers": {
             "Content-Type":"application/json",
             "Api-Version": "1.1",
             "Cobrand-Name": settings.yodlee.cobrandName
         },
-        "body": {
+        "data": {
             "cobrand":{
                 "cobrandLogin":settings.yodlee.cobrandLogin,
                 "cobrandPassword":settings.yodlee.cobrandPassword,
@@ -21,16 +22,18 @@ function cobrandLoginRequest(){
 
 
 function userLoginRequest(cobrandSession) {
+    console.log(cobrandSession)
     return {
         "method":"POST",
         "baseURL": settings.yodlee.endpoint,
+        "url":"/user/login",
         "headers": {
             "Authorization":`cobSession=${cobrandSession}`,
             "Content-Type":"application/json",
             "Api-Version": "1.1",
             "Cobrand-Name": settings.yodlee.cobrandName
         },
-        "body": {
+        "data": {
             "user":{
                 "loginName":settings.yodlee.userLogin,
                 "password":settings.yodlee.userPassword,
@@ -40,4 +43,4 @@ function userLoginRequest(cobrandSession) {
     }
 }
 
-export {cobrandLoginRequest, userLoginRequest}
+module.exports = {cobrandLoginRequest, userLoginRequest}

@@ -1,4 +1,4 @@
-export const settings = {
+module.exports = {
     "yodlee": {
       "endpoint": "https://developer.api.yodlee.com/ysl",
       "cobrandName": "restserver",
