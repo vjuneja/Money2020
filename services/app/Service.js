@@ -1,18 +1,21 @@
 const axios = require('axios')
-const settings = require('./Settings')
-const  {cobrandLoginRequest, userLoginRequest} =  require('./YodleeRequests')
+const  {cobrandLoginRequest, userLoginRequest, getAccountsRequest} =  require('./YodleeRequests')
 
 async function getTokens(callback) {
     const cobrandResponse = await axios.create().request(cobrandLoginRequest())
     const cobrandSession = cobrandResponse.data.session.cobSession
 
     const userLoginResponse = await axios.create().request(userLoginRequest(cobrandSession))
-    console.log(userLoginResponse.data.user.session)
     const userSession = userLoginResponse.data.user.session.userSession
 
-    callback( {"userSession": userSession,
-        "cobSession": cobrandSession})
+    return {"userSession": userSession,
+        "cobSession": cobrandSession}
 }
 
+async function getAccounts(callback) {
+    const apiTokens = await getTokens()
+    const accountsResponse = await axios.create().request(getAccountsRequest(apiTokens.cobSession, apiTokens.userSession))
 
-module.exports = getTokens
+    return accountsResponse.data
+}
+module.exports = getAccounts
