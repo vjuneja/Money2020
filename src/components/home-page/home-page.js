@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import BasePage from '../base-page'
 import Accounts from '../accounts'
-
+import Chart from '../chart'
 import { routeTo } from '../router'
 
 class HomePage extends Component {
@@ -17,6 +17,7 @@ class HomePage extends Component {
     } = this.props
     return (
       <BasePage>
+        <Chart test="chart"/>
         {response && <Accounts
           accounts={response.account}
           today={today}
@@ -27,7 +28,7 @@ class HomePage extends Component {
           onClick={routeTo('transaction')}
         >
           Add transaction
-        </button>
+        </button>     
       </BasePage>
     );
   }

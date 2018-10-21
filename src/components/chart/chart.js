@@ -5,31 +5,39 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
+import moment from 'moment'
 import { getTotalBalance } from '../../scripts/balances'
 
-const getData = (startDate) => {
-    const balances = getTotalBalance(startDate)
-    return {
-        labels: Object.keys(balances),
-        datasets:[{
-            label: "USD",
-            data: Object.values(balances)
-        }]
-    }
-}
-
 const getOptions = () => {
-    const balances = getTotalBalance("2018-10-01")
+    const balances = getTotalBalance("2018-10-01", 100)
     return {
+        chart: {
+            pinchType: 'x',
+            height: 300,
+            followTouchMove: true
+        },
         title: {
-          text: 'My chart'
+          text: 'balance prediction'
         },
         xAxis: {
             type: 'datetime'
         },
+        legend: {
+            enabled: false
+        },
+        yAxis: {
+            plotLines: [{
+                color: 'red',
+                value: 0,
+                width: 2
+            }],
+            scrollbar: {
+                enabled: true,
+                showFull: false
+            }
+        },
         series: [{
-          // data: Object.values(balances),
-          data: Object.keys(balances).map(key => [new Date(key), balances[key]])
+            data: Object.keys(balances).map(key => [moment(key).valueOf(), balances[key]])
         }]
     }
 }
@@ -42,22 +50,14 @@ class HomePage extends Component {
         };
     }
     render() {
-        try {
-            return ( 
-                <div >
-                    <h1> { this.state.title } </h1> 
-                    <div>
-                        <HighchartsReact
-                            highcharts={Highcharts}
-                            options={getOptions()}
-                        />
-                    </div>
-                    
-                </div>
-            );
-        } catch (error) {
-            console.log(error)
-        }
+        return ( 
+            <div>
+                <HighchartsReact
+                    highcharts={Highcharts}
+                    options={getOptions()}
+                />
+            </div>
+        );
     }
 }
 
