@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
+import Chart from "../chart"
 
 class HomePage extends Component {
   constructor() {
@@ -14,6 +15,7 @@ class HomePage extends Component {
     <div>
         <h1>{this.state.title}</h1>
         <span>{this.props.test}</span>
+        <Chart test="chart" />
     </div>
     );
   }
