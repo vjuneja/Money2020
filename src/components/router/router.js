@@ -1,10 +1,20 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import querystring from 'query-string';
+import queryString from 'query-string';
 
 export const routeTo = (routeName, params ) => () => {
-  const qs = querystring.stringify(params)
+  const qs = queryString.stringify(params)
   window.location.hash = routeName + (qs ? '&' + qs : '')
+}
+
+const parseHash = hash => {
+  const routeName = hash.split('&')[0].slice(1)
+  const params = queryString.parse(hash.split('&').slice(1).join('&'))
+
+  return {
+    routeName,
+    params
+  }
 }
 
 class Router extends Component {
@@ -12,7 +22,8 @@ class Router extends Component {
     super();
     this.setRoute = this.setRoute.bind(this)
     this.state = {
-      route: null
+      routeName: null,
+      params: null
     };
   }
 
@@ -22,17 +33,15 @@ class Router extends Component {
   }
 
   setRoute() {
-    console.log('SETTING ROUTE', window.location.hash)
-    this.setState({
-        route: (window.location.hash || '').slice(1) || null
-    })
+    this.setState(parseHash(window.location.hash))
   }
 
   render() {
     const { paths } = this.props
-    const { route } = this.state
-    const RoutedComponent = paths[route] || paths.default
-    return <RoutedComponent />
+    const { routeName, params } = this.state
+    const RoutedComponent = paths[routeName] || paths.default
+    console.log('params', routeName, paths)
+    return <RoutedComponent params={params} />
   }
 }
 

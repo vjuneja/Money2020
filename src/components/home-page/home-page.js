@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Header from '../header'
+import BasePage from '../base-page'
 import Accounts from '../accounts'
 
 import { routeTo } from '../router'
@@ -15,8 +15,7 @@ class HomePage extends Component {
 
   render() {
     return (
-    <div>
-        <Header/>
+      <BasePage>
         <Accounts
           accounts={[
             {
@@ -45,7 +44,7 @@ class HomePage extends Component {
         >
           Add transaction
         </button>
-    </div>
+      </BasePage>
     );
   }
 }
