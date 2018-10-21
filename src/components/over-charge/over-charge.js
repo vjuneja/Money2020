@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import moment from 'moment';
+import classNames from 'classnames'
 import { formatterAbbrev } from '../../utils'
 import './over-charge.css'
 
@@ -10,10 +11,10 @@ class OverCharge extends Component {
   }
 
   render() {
-    const { date, amount, className } = this.props
+    const { date, amount, type, className } = this.props
 
     return (
-      <div className={'over-charge ' + className}>
+      <div className={classNames('over-charge', type, className)}>
         <div className="over-charge--amount mui--text-title">
           <b>{formatterAbbrev.format(Math.floor(amount))}</b>
         </div>
