@@ -1,4 +1,29 @@
-import {getAccounts, getRecurringEvents, getBalances} from './api-client'
+import {getAccounts, getRecurringEvents, getBalances, getAverageBalances} from './api-client'
+
+/**
+ * Get aggregated totals of all users' all account balances.
+ * 
+ */
+export async function getAggregatedTotalBalance(fromDate, toDate) {
+
+    // TODO Get this from service API
+    const accountBalances = await getAverageBalances(fromDate, toDate);
+
+    // Aggregate into total by date
+    const aggregatedData = {}
+    accountBalances.data.account.forEach(account => {
+        account.balances && account.balances.forEach(balance => {
+            const currentBalance = account.isAsset ? balance.balance.amount : -balance.balance.amount
+            if (aggregatedData[balance.date]) {
+                aggregatedData[balance.date] += currentBalance
+            } else {
+                aggregatedData[balance.date] = currentBalance
+            }
+        })
+    })
+    return aggregatedData
+}
+
 
 /**
  * Get aggregated totals of all account balances.
