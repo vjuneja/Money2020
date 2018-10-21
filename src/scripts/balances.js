@@ -103,10 +103,19 @@ function getRecurringEvents() {
     }
 }
 
+/**
+ * 
+ * Adds manual transaction event to the account and recalculate balances.
+ * 
+ * @param {*} account 
+ * @param {*} date 
+ * @param {*} amount 
+ * @param {*} interval 
+ */
 export const addManualTransaction = (account, date, amount, interval) => {
-    var balancesCopy = balances.slice();
+    var accountCopy = Object.assign(account, {});
     var currChange = 0;
-    balancesCopy.forEach((ele) => {
+    accountCopy.balances.forEach((ele) => {
         // We really shouldn't have values smaller than days
         var dateDiffInDays = Math.trunc(Math.round((new Date(ele.date) - new Date(date)) / 1000 / 60 / 60 / 24));
         if (dateDiffInDays >= 0 && dateDiffInDays % interval === 0) {
@@ -114,10 +123,16 @@ export const addManualTransaction = (account, date, amount, interval) => {
         }
         ele.balance.amount += currChange;
     });
-    return balancesCopy;
+    return accountCopy;
 }
 
 function createBankAsset(accountId, startDate, days, startingBalance) {
+    var account = {
+        'CONTAINER': 'bank',
+        'id': accountId,
+        'isAsset': true,
+        'balances': balances
+    };
     var balances = [];
     for (var i = 0; i < days; i++) {
         var date = new Date(startDate);
@@ -132,13 +147,8 @@ function createBankAsset(accountId, startDate, days, startingBalance) {
 
     }
     // Add recurring transactions
-    balances = addManualTransaction(balances, '2018-10-05', 1500, 30);
-    balances = addManualTransaction(balances, '2018-10-03', -300, 14);
-    balances = addManualTransaction(balances, '2018-10-02', -50, 7);
-    return {
-        'CONTAINER': 'bank',
-        'id': accountId,
-        'isAsset': true,
-        'balances': balances
-    }
+    account = addManualTransaction(account, '2018-10-05', 1500, 30);
+    account = addManualTransaction(account, '2018-10-03', -300, 14);
+    account = addManualTransaction(account, '2018-10-02', -50, 7);
+    return account;
 }
