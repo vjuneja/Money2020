@@ -13,6 +13,7 @@ wrapper
             paths={{
                 'test': Test,
                 'transaction': Transaction,
+                'home': HomePage,
                 'default': HomePage
             }}
         />,

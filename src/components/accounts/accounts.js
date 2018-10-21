@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import AccountCard from '../account-card'
-import { routeTo } from '../router/router'
+import { routeTo } from '../router'
 
 class Account extends Component {
   constructor() {
@@ -19,6 +19,7 @@ class Account extends Component {
                 name={a.name}
                 num={a.number}
                 amount={a.total}
+                overCharge={a.overCharge}
             />
         ))}
     </div>

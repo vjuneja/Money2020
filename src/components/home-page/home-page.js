@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import Header from '../header'
 import Accounts from '../accounts'
 
+import { routeTo } from '../router'
+
 class HomePage extends Component {
   constructor() {
     super();
@@ -22,7 +24,11 @@ class HomePage extends Component {
               name: 'Checking',
               type: 'checking',
               number: `4`,
-              total: 1000
+              total: 1000,
+              overCharge: {
+                amount: -50,
+                date: "Sat Oct 20 2018 17:27:50 GMT-0700"
+              }
             },
             {
               id: 2,
@@ -33,6 +39,12 @@ class HomePage extends Component {
             },
           ]}
         />
+        <button
+          className="mui-btn mui-btn--primary"
+          onClick={routeTo('transaction')}
+        >
+          Add transaction
+        </button>
     </div>
     );
   }
