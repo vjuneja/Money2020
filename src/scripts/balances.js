@@ -105,7 +105,8 @@ function getRecurringEvents() {
 
 /**
  * 
- * Adds manual transaction event to the account and recalculate balances.
+ * Adds manual transaction event to the account, recalculates balances, 
+ * and return a new instance of the account.
  * 
  * @param {*} account 
  * @param {*} date 
