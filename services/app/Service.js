@@ -1,4 +1,5 @@
 const axios = require('axios')
+const { accounts, balances } = require('./data')
 const  {cobrandLoginRequest, userLoginRequest, getAccountsRequest, getRecurringEventsRequest, getBalancesRequest} =  require('./YodleeRequests')
 const {cancelRecurringPaymentRequest} = require('./VisaRequests')
 
@@ -14,10 +15,9 @@ async function getTokens() {
 }
 
 async function getAccounts() {
-    const apiTokens = await getTokens()
-    const accountsResponse = await axios.create().request(getAccountsRequest(apiTokens.cobSession, apiTokens.userSession))
-
-    return accountsResponse.data
+    // const apiTokens = await getTokens()
+    // const accountsResponse = await axios.create().request(getAccountsRequest(apiTokens.cobSession, apiTokens.userSession))
+    return accounts
 }
 async function getRecurringEvents() {
     const apiTokens = await getTokens()
@@ -28,10 +28,15 @@ async function getRecurringEvents() {
 }
 
 async function getBalances(params) {
-    const apiTokens = await getTokens()
-    const recurringEventsResponse = await axios.create().request(getBalancesRequest(params.fromDate, params.toDate, apiTokens.cobSession, apiTokens.userSession))
-
-    return recurringEventsResponse.data
+    // const apiTokens = await getTokens()
+    // const recurringEventsResponse = await axios.create().request(getBalancesRequest(params.fromDate, params.toDate, apiTokens.cobSession, apiTokens.userSession))
+    const mod = balances.account.slice(-1)[0]
+    return {
+        account: [
+            ...balances.account.slice(0, -1),
+            mod
+        ]
+    }
 }
 
 async function getAverageBalances(params) {
@@ -77,6 +82,16 @@ function random() {
     let rand = (x - Math.floor(x))*3000;
     return rand;
 }
+
+function updateAccounts(accountsResponse) {
+    const ignore = [3, 7]
+    const { account } = accountsResponse
+    return {
+        account: account.filter((a, i) => !ignore.includes(i))
+    }
+
+}
+
 module.exports = {
     getAccounts: getAccounts, //http://localhost:3000/api/getAccounts
     getRecurringEvents: getRecurringEvents, //http://localhost:3000/api/getRecurringEvents
