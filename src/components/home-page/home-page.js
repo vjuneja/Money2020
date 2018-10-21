@@ -4,7 +4,6 @@ import BasePage from '../base-page'
 import Accounts from '../accounts'
 import Chart from '../chart'
 import { routeTo } from '../router'
-import './home-page.css'
 
 class HomePage extends Component {
   constructor() {
