@@ -20,15 +20,20 @@ const EMI = ()=> {
     )
 }
 
-const Accounts = () => {
+const Accounts = ({accounts}) => {
+    const accountNames = accounts.map((account) => {
+        return `${account.accountName}: ${account.providerName} - ${account.accountNumber}`
+    })
+    const options = []
+    accountNames.forEach(element => {
+        options.push(<option>{element}</option>)
+    });
+
     return (
         <div className="mui-select">
             <select>
-                <option>Bank of America - Checking</option>
-                <option>Chase Saphire Reserve - 5544</option>
-                <option>Bank of America Cash Rewards Visa Signature - 6112</option>
-                <option>Bank of America Travel Rewards Visa Signature - 6112</option>
-                </select>
+                {options}
+            </select>
             <label>Select a bank account</label>
         </div>
     )
@@ -60,6 +65,7 @@ export default class Transaction extends React.Component {
 
 
     render(){
+        const { account } = this.props.response
         return (
             <BasePage>
                 <div className="mui-panel">
@@ -77,7 +83,7 @@ export default class Transaction extends React.Component {
                      <form className="mui-form">
                         {this.state.txnType === `EMI`? <EMI />  :null}
                         {this.state.txnType === `OTP`? <OTP />  :null}
-                        {this.state.txnType ? <Accounts /> : null }
+                        {this.state.txnType ? <Accounts accounts={account}/> : null }
                         {this.state.txnType ? <button type="submit" className="mui-btn mui-btn--raised">Submit</button>: null }
                     </form>
                 </div>
