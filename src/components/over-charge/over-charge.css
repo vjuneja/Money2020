@@ -8,7 +8,9 @@
     padding-left: 2rem;
     color: grey;
 }
-
-.over-charge--amount {
+.negative .over-charge--amount {
     color: #f23614;
+}
+.positive .over-charge--amount {
+    color: darkgreen;
 }

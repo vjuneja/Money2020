@@ -6,63 +6,121 @@ import PropTypes from "prop-types";
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import moment from 'moment'
-import { getTotalBalance } from '../../scripts/balances'
+import { getTotalBalance, getAggregatedTotalBalance } from '../../scripts/balances'
+import {formatterAbbrev} from '../../utils'
+import "./chart.css"
 
-const getOptions = () => {
-    const balances = getTotalBalance("2018-10-01", 100)
+const buildOptions = (chartData = {} , aggregateChartData = {}) => {
     return {
         chart: {
-            pinchType: 'x',
-            height: 300,
+            type: "line",
+            height: 250,
             followTouchMove: true
         },
+        tooltip: {
+            shadow: false,
+            borderWidth: 0,
+            backgroundColor: 'transparent',
+            crosshairs: [true],
+            positioner: () => {
+                return { x: 250, y: 0 };
+            },
+            useHTML: true,
+            formatter: function () {
+                if(this.series.name == 'aggregate')
+                    return false ;
+                const colorClass = this.y > 0 ? 'darkgreen' : '#f23614' 
+                return `
+                <table>
+                    <tr><td class="mui--text-title" style="font-weight:bold; color:${colorClass}">
+                        ${formatterAbbrev.format(this.y)}</td></tr>
+                    <tr><td style="text-align: center">${moment(this.x).format('YYYY, MMM DD')}</td></tr>
+                </table>`;
+            }
+        },
         title: {
-          text: 'balance prediction'
+          text: ''
         },
         xAxis: {
-            type: 'datetime'
+            type: 'datetime',
+            crosshair: {
+                width: 3,
+                color: 'lightgray'
+            },
+            plotLines: [{
+                color: 'lightblue',
+                value: moment(Date()).valueOf(),
+                width: 1
+            }]
         },
         legend: {
-            enabled: false
+            enabled: true
         },
         yAxis: {
+            gridLineColor: 'transparent',
             plotLines: [{
                 color: 'red',
                 value: 0,
-                width: 2
+                width: 1
             }],
-            scrollbar: {
-                enabled: true,
-                showFull: false
+            title: {
+                text: ''
             }
         },
         series: [{
-            data: Object.keys(balances).map(key => [moment(key).valueOf(), balances[key]])
-        }]
+            name: "balance",
+            data: Object.keys(chartData).filter(key => moment(key) <= moment())
+                .map(key => [moment(key).valueOf(), chartData[key]]),
+            color: "lightgreen",
+            lineWidth: 3
+        },
+        {
+            showInLegend: false,
+            data: Object.keys(chartData).filter(key => moment(key) > moment())
+                .map(key => [moment(key).valueOf(), chartData[key]]),
+            dashStyle: "shortdash",
+            color: "lightgreen",
+            lineWidth: 3
+        },
+        {
+            name: "aggregate",
+            data: Object.keys(aggregateChartData)
+                .map(key => [moment(key).valueOf(), aggregateChartData[key]]),
+            color: "lightgray",
+            lineWidth: 1
+        }],
     }
 }
 
-class HomePage extends Component {
+class Chart extends Component {
     constructor() {
         super();
         this.state = {
-            title: "chart"
+            title: "chart",
+            chartData: {},
+            aggregateChartData: {}
         };
     }
+
+    getOptions() {
+        return buildOptions(this.props.chartData, this.props.aggregateChartData)
+    }
+
     render() {
         return ( 
-            <div>
+            <div className="line-chart" id="chartContainer">
                 <HighchartsReact
                     highcharts={Highcharts}
-                    options={getOptions()}
+                    options={this.getOptions()}
                 />
             </div>
         );
     }
 }
 
-HomePage.propTypes = {
-    test: PropTypes.string
+Chart.propTypes = {
+    chartData: PropTypes.string,
+    aggregateChartData: PropTypes.string
 }
 
-export default HomePage;
+export default Chart;

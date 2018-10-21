@@ -10,14 +10,16 @@ class AccountCard extends Component {
   }
 
   render() {
-    const { name, num, amount, overCharge, ...rest } = this.props
+    const { name, num, amount, type, overCharge, ...rest } = this.props
 
     return (
         <div className="account-card mui-panel" {...rest}>
-            <div className="mui--text-caption"><b>{name}</b></div>
-            <div className="mui--text-caption">{num.padStart(4, '0')}</div>
-            <div className="mui--text-headline">{formatterFull.format(amount)}</div>
-            {overCharge && <OverCharge
+            <div className="mui--text-caption"><b>{name} ({num.padStart(4, '0')})</b></div>
+            <div className="mui--text-headline">
+                {formatterFull.format(amount)}
+            </div>
+            {overCharge && type !== "CREDIT" && <OverCharge
+                type={type === "CREDIT" ? "positive" : "negative"}
                 className="account-card--over-charge"
                 date={overCharge.date} amount={overCharge.amount}
             />}

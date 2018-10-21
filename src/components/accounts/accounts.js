@@ -4,10 +4,6 @@ import moment from 'moment';
 import AccountCard from '../account-card'
 import { routeTo } from '../router'
 
-const getTodaysBal = (acct, today) => {
-    return acct.balances.find(a => a.date === today).balance
-}
-
 const findOverCharge = (acct, today) =>{
     const { date, balance } = acct.balances
         .filter(a => moment(a.date).isAfter(today))
@@ -28,14 +24,16 @@ class Account extends Component {
 
     return (
     <div className="mui-container">
-        <div className="mui--text-headline">Accounts</div>
+        <div className="mui--text-headline" style={{"textAlign": "center", "fontWeight": "bold", "padding": "10px"}}>Accounts</div>
         {accounts
+            .filter(a => !!a.balances)
             .map(a => ({
                     id: a.id,
                     name: a.accountName,
                     num: a.accountNumber,
-                    amount: getTodaysBal(a, today).amount,
-                    overChage: findOverCharge(a, today)
+                    amount: a.balance.amount,
+                    type: a.accountType,
+                    overCharge: findOverCharge(a, today)
                 }))
             .map(a =>(
                 <AccountCard
@@ -44,7 +42,8 @@ class Account extends Component {
                     name={a.name}
                     num={a.num}
                     amount={a.amount}
-                    overCharge={a.overChage}
+                    type={a.type}
+                    overCharge={a.overCharge}
                 />
             ))
         }

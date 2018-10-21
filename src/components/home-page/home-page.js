@@ -4,6 +4,7 @@ import BasePage from '../base-page'
 import Accounts from '../accounts'
 import Chart from '../chart'
 import { routeTo } from '../router'
+import './home-page.css'
 
 class HomePage extends Component {
   constructor() {
@@ -14,21 +15,26 @@ class HomePage extends Component {
     const {
       response,
       today,
+      chartData,
+      aggregateChartData
     } = this.props
     return (
       <BasePage>
-        <Chart test="chart"/>
-        {response && <Accounts
-          accounts={response.account}
-          today={today}
-        />}
-
-        <button
-          className="mui-btn mui-btn--primary"
-          onClick={routeTo('transaction')}
-        >
-          Add transaction
-        </button>     
+        <div>
+            <Chart chartData={chartData} aggregateChartData={aggregateChartData}/>
+            {response && <Accounts
+              accounts={response.account}
+              today={today}
+            />}
+            <div className="mui-container">
+              <button
+                style={{"width": "100%", "margin": "1rem 0"}}
+                className="mui-btn mui-btn--primary"
+                onClick={routeTo('transaction')}>
+                Add transaction
+              </button>
+            </div>
+          </div>
       </BasePage>
     );
   }
@@ -36,6 +42,8 @@ class HomePage extends Component {
 
 HomePage.propTypes = {
   response: PropTypes.object,
+  chartData: PropTypes.object,
+  aggregateChartData: PropTypes.object
 }
 
 export default HomePage;

@@ -74,7 +74,7 @@ async function getVisaTransactions(params) {
 var seed = 1;
 function random() {
     var x = Math.sin(seed++) * 10000;
-    let rand = (x - Math.floor(x))*500;
+    let rand = (x - Math.floor(x))*3000;
     return rand;
 }
 module.exports = {
