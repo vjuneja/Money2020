@@ -5,11 +5,12 @@ import _get from 'lodash/get'
 import BasePage from '../base-page'
 import { formatterFull } from '../../utils'
 import { addManualTransaction } from '../../scripts/balances'
+import moment from 'moment'
 
 
 const RecurringEvent = ({ recurringPayment, account, onCancel }) => {
-  const { amount, description, categoryType } = recurringPayment
-  const cancelPayment = () => onCancel(account, amount.amount)
+  const { amount, description, categoryType, frequency, lastTransactionDate} = recurringPayment
+  const cancelPayment = () => onCancel(account, amount.amount, frequency, lastTransactionDate)
   return (
     <div className="mui-panel">
        <div>{description.simple}</div>
@@ -34,8 +35,10 @@ class AccountPage extends Component {
     this.cancelPayment = this.cancelPayment.bind(this)
   }
 
-  cancelPayment(account, amount) {
-    addManualTransaction(account, moment(this.state.today).subtract(1, 'days'), amount)
+  cancelPayment(account, amount, frequency, lastTransactionDate) {
+    const days = frequency === 'DAILY' ? 1 : frequency === 'WEEKLY' ? 7 : frequency === 'SEMI_MONTHLY' ? 14 : 30;
+    const nextTransactionDate = frequency === 'MONTHLY' ? moment(lastTransactionDate).add(1, 'months') : moment(lastTransactionDate).add(days, 'days')
+    addManualTransaction(account, nextTransactionDate, amount, days)
   }
 
   render() {
