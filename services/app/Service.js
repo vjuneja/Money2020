@@ -1,5 +1,6 @@
 const axios = require('axios')
 const  {cobrandLoginRequest, userLoginRequest, getAccountsRequest, getRecurringEventsRequest, getBalancesRequest} =  require('./YodleeRequests')
+const {cancelRecurringPaymentRequest} = require('./VisaRequests')
 
 async function getTokens() {
     const cobrandResponse = await axios.create().request(cobrandLoginRequest())
@@ -49,6 +50,27 @@ async function getAverageBalances(params) {
     }))}
 }
 
+async function cancelTransaction(params) {
+    try {   
+        let req = cancelRecurringPaymentRequest(params.cardNumber, params.merchantId, params.merchantName)
+        const cancelTransactionResponse = await axios.create().request(req)
+        return cancelTransactionResponse.data
+    } catch(e) {
+        return e.response.data
+    }
+}
+
+async function getVisaTransactions(params) {
+    try {   
+        let req = cancelRecurringPaymentRequest(params.cardNumber, params.merchantId, params.merchantName)
+        console.log(req)
+        const cancelTransactionResponse = await axios.create().request(req)
+        return cancelTransactionResponse.data
+    } catch(e) {
+        return e.response.data
+    }
+}
+
 var seed = 1;
 function random() {
     var x = Math.sin(seed++) * 10000;
@@ -59,5 +81,8 @@ module.exports = {
     getAccounts: getAccounts, //http://localhost:3000/api/getAccounts
     getRecurringEvents: getRecurringEvents, //http://localhost:3000/api/getRecurringEvents
     getBalances: getBalances, //http://localhost:3000/api/getBalances?fromDate=2018-01-10&toDate=2018-12-12
-    getAverageBalances: getAverageBalances //http://localhost:3000/api/getAverageBalances
+    getAverageBalances: getAverageBalances, //http://localhost:3000/api/getAverageBalances
+    cancelTransaction: cancelTransaction, //http://localhost:3000/api/cancelTransaction?cardNumber=4005520000011126&merchantId=1234567891&merchantName=name
+    getVisaTransactions: getVisaTransactions
+
 }
