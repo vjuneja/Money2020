@@ -4,17 +4,15 @@ import PropTypes from "prop-types";
 import _get from 'lodash/get'
 import BasePage from '../base-page'
 import { formatterFull } from '../../utils'
-import { addManualTransaction } from '../../scripts/balances'
+import { cancelRecurringTransaction } from '../../scripts/balances'
 import Chart from '../chart'
-import moment from 'moment';
 
 
 const RecurringEvent = ({ recurringPayment, account }) => {
-  const { amount, description, category, lastTransactionDate, frequency} = recurringPayment
+  const { amount, description, category } = recurringPayment
   const cancelPayment = () => {
-    const days = frequency == 'DAILY' ? 1 : frequency == 'WEEKLY' ? 7 : frequency == 'SEMI_MONTHLY' ? 14 : 30;
-    const startDate = frequency == 'MONTHLY' ? moment(lastTransactionDate).add(1, 'months') : moment(lastTransactionDate).add(days, 'days');
-    addManualTransaction(account, startDate, amount, days)
+    const account = cancelRecurringTransaction(account, recurringPayment)
+    // Update account info in state with the one here
   }
   return (
     <div className="mui-panel">

@@ -15,3 +15,7 @@ export async function getBalances(fromDate, toDate) {
 export async function getAverageBalances(fromDate, toDate) {
     return await axios.create().request("/api/getAverageBalances?fromDate=" + fromDate + "&toDate=" + toDate)
 }
+
+export async function cancelVisaTransaction(cardNumber, merchantId, merchantName) {
+    return await axios.create().request("/api/cancelTransaction?cardNumber=" + cardNumber + "&merchantId=" + merchantId + "&merchantName=" + merchantName)
+}
