@@ -57,7 +57,7 @@ export const getAccountBalances = (fromDate, days) => {
 }
 
 function findAccountElement(result, accountId) {
-    for (var account in getAccountBalanceResult.account) {
+    for (var account in result.account) {
         if (account.id == accountId) {
             return account;
         }
