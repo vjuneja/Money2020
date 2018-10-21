@@ -16,7 +16,7 @@ const buildOptions = (balances) => {
             followTouchMove: true
         },
         title: {
-          text: 'balance prediction'
+          text: 'Balance prediction'
         },
         xAxis: {
             type: 'datetime'
