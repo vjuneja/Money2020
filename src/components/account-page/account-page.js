@@ -4,17 +4,15 @@ import PropTypes from "prop-types";
 import _get from 'lodash/get'
 import BasePage from '../base-page'
 import { formatterFull } from '../../utils'
-import { addManualTransaction } from '../../scripts/balances'
+import { cancelRecurringTransaction } from '../../scripts/balances'
 import Chart from '../chart'
-import moment from 'moment';
 
 
 const RecurringEvent = ({ recurringPayment, account }) => {
-  const { amount, description, category, lastTransactionDate, frequency} = recurringPayment
+  const { amount, description, category } = recurringPayment
   const cancelPayment = () => {
-    const days = frequency == 'DAILY' ? 1 : frequency == 'WEEKLY' ? 7 : frequency == 'SEMI_MONTHLY' ? 14 : 30;
-    const startDate = frequency == 'MONTHLY' ? moment(lastTransactionDate).add(1, 'months') : moment(lastTransactionDate).add(days, 'days');
-    addManualTransaction(account, startDate, amount, days)
+    account = cancelRecurringTransaction(account, recurringPayment)
+    // Update account info in state with the one here
   }
   return (
     <div className="mui-panel">
@@ -39,6 +37,15 @@ class AccountPage extends Component {
     super();
   }
 
+  updateAccount(account) {
+    const { recurringEvents, id, balances } = account
+    const chartData = {}
+    balances && balances.forEach(ele => {
+      chartData[ele.date] = ele.balance.amount
+    });
+    this.state = { chartData: chartData };
+  }
+
   render() {
     const accountId = window.location.hash.split("=").pop()
     const accounts = _get(this.props, `response.account`)
@@ -46,18 +53,15 @@ class AccountPage extends Component {
       if(element.id == accountId){
         return element
       }
-    })
-    const { recurringEvents, id, balances } = account[0]
-    const chartData = {}
-    balances.forEach(ele => {
-      chartData[ele.date] = ele.balance.amount
-    });
+    })[0]
+    const { recurringEvents } = account
+    this.updateAccount(account);
     return (
         <BasePage>
-            <Chart chartData={chartData}/>
+            <Chart chartData={this.state.chartData}/>
             <div className="mui-container">
               <div style={{"fontWeight": "bold", "margin": "1rem 0", "textAlign": "center"}}>Recurring Payments</div>
-              {recurringEvents && recurringEvents.length ? <RecurringEvents recurringEvents={recurringEvents} account={account[0]}/> :
+              {recurringEvents && recurringEvents.length ? <RecurringEvents recurringEvents={recurringEvents} account={account}/> :
               `You have no recurring payments on this card` }
               
             </div>
