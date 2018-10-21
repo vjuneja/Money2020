@@ -13,7 +13,7 @@ const Header = ()=> {
                         align="right"
                         onClick={routeTo('home')}
                     >
-                        <i className="fas fa-home" style={{"fontSize": "32px"}}/>
+                        <i className="fas fa-home" style={{"fontSize": "18px"}}/>
                     </td>
                 </tr>
             </tbody>
