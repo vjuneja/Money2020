@@ -1,6 +1,6 @@
 
 import React from 'react'
-import Header from '../header'
+import BasePage from '../base-page'
 
 
 
@@ -61,8 +61,7 @@ export default class Transaction extends React.Component {
 
     render(){
         return (
-            <div>
-                <Header />
+            <BasePage>
                 <div className="mui-panel">
                 <div style={{"fontWeight": "bold", "fontSize": "16px", "marginBottom": ".5rem"}}>Add a transaction</div>
                     <div className="mui-dropdown" style={{"display": "block"}}>
@@ -82,6 +81,7 @@ export default class Transaction extends React.Component {
                         {this.state.txnType ? <button type="submit" className="mui-btn mui-btn--raised">Submit</button>: null }
                     </form>
                 </div>
-            </div>)
+            </BasePage>
+        )
     }
 }
