@@ -1,6 +1,7 @@
 
 import React from 'react'
 import BasePage from '../base-page'
+import  { addManualTransaction } from '../../scripts/balances'
 
 
 
@@ -26,7 +27,7 @@ const Accounts = ({accounts}) => {
     })
     const options = []
     accountNames.forEach(element => {
-        options.push(<option>{element}</option>)
+        options.push(<option value={element.split('-').pop().trim()}>{element}</option>)
     });
 
     return (
@@ -63,6 +64,28 @@ export default class Transaction extends React.Component {
         })
     }
 
+    onSubmit(e){
+        e.preventDefault()
+        let months
+        let emiAmount
+        const selectedAccountNumber = e.nativeEvent.currentTarget.elements[2].selectedOptions[0].value      
+        const { account } = this.props.response
+        const selectedAccount = account.filter((element) => {
+            if(element.accountNumber === selectedAccountNumber){
+                return element
+            }
+        })
+        const index = account.indexOf(selectedAccount[0])
+        if(this.state.txnType === `EMI`){
+            emiAmount = e.nativeEvent.currentTarget.elements[0].value
+        } 
+        months = e.nativeEvent.currentTarget.elements[1].value
+        const updateAccount = addManualTransaction(selectedAccount[0],new Date(),emiAmount,months*30)
+        updateAccount.then((value) => {
+            this.props.addTransaction(index, value)
+        })    
+    }
+
 
     render(){
         const { account } = this.props.response
@@ -80,7 +103,7 @@ export default class Transaction extends React.Component {
                             <li><a href="javascript:;" onClick={this.selectTranaction.bind(this)} data-txn-type="OTP">One Time Payment</a></li>
                         </ul>
                      </div>
-                     <form className="mui-form">
+                     <form className="mui-form" onSubmit={this.onSubmit.bind(this)}>
                         {this.state.txnType === `EMI`? <EMI />  :null}
                         {this.state.txnType === `OTP`? <OTP />  :null}
                         {this.state.txnType ? <Accounts accounts={account}/> : null }

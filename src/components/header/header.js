@@ -7,7 +7,7 @@ const Header = ()=> {
         <table width="100%">
             <tbody>
                 <tr style={{"verticalAlign": "middle"}}>
-                    <td className="mui--appbar-height" style={{"fontSize": "18px", "fontWeight": "bold"}}>Spendwise</td>
+                    <td className="mui--appbar-height" style={{"fontSize": "18px", "fontWeight": "bold"}}>SpendWise</td>
                     <td
                         className="mui--appbar-height"
                         align="right"
