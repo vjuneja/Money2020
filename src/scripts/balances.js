@@ -148,7 +148,7 @@ function createBankAsset(accountId, startDate, days, startingBalance) {
     account.balances = balances;
     // Add recurring transactions
     account = addManualTransaction(account, '2018-10-05', 1500, 30);
-    account = addManualTransaction(account, '2018-10-03', -300, 14);
+    account = addManualTransaction(account, '2018-10-03', -1000, 14);
     account = addManualTransaction(account, '2018-10-02', -50, 7);
     return account;
 }

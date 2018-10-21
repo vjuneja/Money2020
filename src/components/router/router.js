@@ -37,11 +37,11 @@ class Router extends Component {
   }
 
   render() {
-    const { paths } = this.props
+    const { paths, ...rest} = this.props
     const { routeName, params } = this.state
     const RoutedComponent = paths[routeName] || paths.default
-    console.log('params', routeName, paths)
-    return <RoutedComponent params={params} />
+
+    return <RoutedComponent params={params} {...rest} />
   }
 }
 
