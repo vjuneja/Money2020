@@ -14,8 +14,10 @@ class AccountCard extends Component {
 
     return (
         <div className="account-card mui-panel" {...rest}>
-            <div className="mui--text-caption"><b>{name} - {num.padStart(4, '0')}</b></div>
-            <div className="mui--text-headline">{formatterFull.format(amount)}</div>
+            <div className="mui--text-caption"><b>{name} ({num.padStart(4, '0')})</b></div>
+            <div className="mui--text-headline">
+                {formatterFull.format(amount)}
+            </div>
             {overCharge && type !== "CREDIT" && <OverCharge
                 type={type === "CREDIT" ? "positive" : "negative"}
                 className="account-card--over-charge"
