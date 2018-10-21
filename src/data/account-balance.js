@@ -1,4 +1,4 @@
-export const getAccountBalances = () => {
+export const getAccountBalances = async () => {
     return {
     "account": [
         {

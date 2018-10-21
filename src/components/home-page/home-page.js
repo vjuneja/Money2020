@@ -8,9 +8,6 @@ import { routeTo } from '../router'
 class HomePage extends Component {
   constructor() {
     super();
-    this.state = {
-      title: "homepage"
-    };
   }
 
   render() {
