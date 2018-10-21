@@ -39,13 +39,21 @@ class AccountPage extends Component {
   }
 
   render() {
-    const account = _get(this.props, `response.account[0]`)
-    const { recurringEvents, id } = account
+    const accountId = window.location.hash.split("=").pop()
+    const accounts = _get(this.props, `response.account`)
+    const account = accounts.filter((element) => {
+      if(element.id == accountId){
+        return element
+      }
+    })
+    const { recurringEvents, id } = account[0]
     return (
         <BasePage>
             <div className="mui-container">
-              <div style={{"fontWeight": "bold", "margin": "1rem 0"}}>Your Recurring Payments</div>
-              <RecurringEvents recurringEvents={recurringEvents} account={account} onCancel={this.cancelPayment} />
+              <div style={{"fontWeight": "bold", "margin": "1rem 0", "textAlign": "center"}}>Recurring Payments</div>
+              {recurringEvents && recurringEvents.length ? <RecurringEvents recurringEvents={recurringEvents} account={account} onCancel={this.cancelPayment} /> :
+              `You have no recurring payments on this card` }
+              
             </div>
         </BasePage>
     );
