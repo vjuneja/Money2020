@@ -24,7 +24,7 @@ class Account extends Component {
 
     return (
     <div className="mui-container">
-        <div className="mui--text-headline">Accounts</div>
+        <div className="mui--text-headline" style={{"textAlign": "center", "fontWeight": "bold", "padding": "10px"}}>Accounts</div>
         {accounts
             .filter(a => !!a.balances)
             .map(a => ({
