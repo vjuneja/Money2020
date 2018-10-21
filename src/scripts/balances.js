@@ -1,18 +1,18 @@
-const apiClient = require('api-client')
+import {getAccounts, getRecurringEvents, getBalances} from './api-client'
 
 /**
  * Get aggregated totals of all account balances.
  * 
  */
-async function getTotalBalance(fromDate, toDate) {
+export async function getTotalBalance(fromDate, toDate) {
 
     // TODO Get this from service API
     const accountBalances = await getAccountBalances(fromDate, toDate);
 
     // Aggregate into total by date
     const aggregatedData = {}
-    accountBalances.account.forEach(account => {
-        account.balances.forEach(balance => {
+    accountBalances.data.account.forEach(account => {
+        account.balances && account.balances.forEach(balance => {
             const currentBalance = account.isAsset ? balance.balance.amount : -balance.balance.amount
             if (aggregatedData[balance.date]) {
                 aggregatedData[balance.date] += currentBalance
@@ -28,20 +28,20 @@ async function getTotalBalance(fromDate, toDate) {
  * Get account info and balances for all accounts for the user.
  * 
  */
-async function getAccountBalances(fromDate, toDate) {
+export async function getAccountBalances(fromDate, toDate) {
     // Result of calling /accounts for account info
     var getAccountsResult = await getAccounts();
-    var getAccountBalanceResult = await getAccountBalances(fromDate, toDate);
+    var getAccountBalanceResult = await getBalances(fromDate, toDate);
     var getRecurringEventsResult = await getRecurringEvents();
     // Merge account details, balances, and recurring events into account
-    getAccountsResult.account.forEach(account => {
+    getAccountsResult.data.account.forEach(account => {
         var accountId = account.id;
-        var accountBalances = findAccountElement(getAccountBalanceResult, accountId);
+        var accountBalances = findAccountElement(getAccountBalanceResult.data, accountId);
         if (accountBalances) {
             account.balances = accountBalances.balances;
             account.isAsset = accountBalances.isAsset;
         }
-        var accountRecurringEvents = findAccountElement(getRecurringEventsResult, accountId);
+        var accountRecurringEvents = findAccountElement(getRecurringEventsResult.data, accountId);
         if (accountRecurringEvents) {
             account.recurringEvents = accountRecurringEvents.recurringEvents;
         }
@@ -49,22 +49,10 @@ async function getAccountBalances(fromDate, toDate) {
     return getAccountsResult;
 }
 
-function findAccountElement(result, accountId) {
-    return result.account && result.account.find(account => {
+function findAccountElement(data, accountId) {
+    return data.account && data.account.find(account => {
         return account.id == accountId;
     });
-}
-
-async function getAccounts() {
-    return await apiClient.getAccounts();
-}
-
-async function getAccountBalances(fromDate, toDate) {
-    return await getBalances(fromDate, toDate);
-}
-
-async function getRecurringEvents() {
-    return await apiClient.getRecurringEvents();
 }
 
 /**
@@ -77,7 +65,7 @@ async function getRecurringEvents() {
  * @param {*} amount 
  * @param {*} interval 
  */
-async function addManualTransaction(account, date, amount, interval) {
+export async function addManualTransaction(account, date, amount, interval) {
     var accountCopy = Object.assign(account, {});
     var currChange = 0;
     accountCopy.balances.forEach((ele) => {
@@ -89,10 +77,4 @@ async function addManualTransaction(account, date, amount, interval) {
         ele.balance.amount += currChange;
     });
     return accountCopy;
-}
-
-module.exports = {
-    getAccountBalances: getAccountBalances,
-    getTotalBalance: getTotalBalance,
-    addManualTransaction: addManualTransaction
 }
