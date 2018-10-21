@@ -18,18 +18,21 @@ class HomePage extends Component {
     } = this.props
     return (
       <BasePage>
-        <Chart test="chart"/>
-        {response && <Accounts
-          accounts={response.account}
-          today={today}
-        />}
-
-        <button
-          className="mui-btn mui-btn--primary"
-          onClick={routeTo('transaction')}
-        >
-          Add transaction
-        </button>
+        <div>
+            <Chart test="chart"/>
+            {response && <Accounts
+              accounts={response.account}
+              today={today}
+            />}
+            <div className="mui-container">
+              <button
+                style={{"width": "100%", "margin": "1rem 0"}}
+                className="mui-btn mui-btn--primary"
+                onClick={routeTo('transaction')}>
+                Add transaction
+              </button>
+            </div>
+          </div>
       </BasePage>
     );
   }
