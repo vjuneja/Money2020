@@ -1,28 +1,40 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import Chart from "../chart"
+import BasePage from '../base-page'
+import Accounts from '../accounts'
+
+import { routeTo } from '../router'
 
 class HomePage extends Component {
   constructor() {
     super();
-    this.state = {
-      title: "homepage"
-    };
   }
+
   render() {
+    const {
+      response,
+      today,
+    } = this.props
     return (
-    <div>
-        <h1>{this.state.title}</h1>
-        <span>{this.props.test}</span>
-        <Chart test="chart" />
-    </div>
+      <BasePage>
+        {response && <Accounts
+          accounts={response.account}
+          today={today}
+        />}
+
+        <button
+          className="mui-btn mui-btn--primary"
+          onClick={routeTo('transaction')}
+        >
+          Add transaction
+        </button>
+      </BasePage>
     );
   }
 }
 
 HomePage.propTypes = {
-    test: PropTypes.string
+  response: PropTypes.object,
 }
 
 export default HomePage;
