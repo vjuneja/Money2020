@@ -8,8 +8,7 @@ import HighchartsReact from 'highcharts-react-official'
 import moment from 'moment'
 import { getTotalBalance } from '../../scripts/balances'
 
-const getOptions = () => {
-    const balances = getTotalBalance("2018-10-01", 100)
+const buildOptions = (balances) => {
     return {
         chart: {
             pinchType: 'x',
@@ -46,15 +45,27 @@ class HomePage extends Component {
     constructor() {
         super();
         this.state = {
-            title: "chart"
+            title: "chart",
+            chartData: {}
         };
     }
+
+    getOptions() {
+        return buildOptions(this.state.chartData)
+    }
+
+    componentDidMount() {
+        getTotalBalance("2018-10-01", "2019-01-01").then((response) => {
+            this.setState({chartData : response})
+        })
+    }
+
     render() {
         return ( 
             <div>
                 <HighchartsReact
                     highcharts={Highcharts}
-                    options={getOptions()}
+                    options={this.getOptions()}
                 />
             </div>
         );
