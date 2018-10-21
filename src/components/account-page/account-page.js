@@ -13,9 +13,9 @@ const RecurringEvent = ({ recurringPayment, account, onCancel }) => {
   const cancelPayment = () => onCancel(account, amount.amount, frequency, lastTransactionDate)
   return (
     <div className="mui-panel">
-       <div>{description.simple}</div>
-       {/* <div>{categoryType}</div> */}
-       <div>{formatterFull.format(amount.amount)} - <a href="javascript:;" onClick={cancelPayment}>Cancel payment </a></div>
+       <div>{description.simple} - {formatterFull.format(amount.amount)}</div>
+       <div style={{"fontSize": "12px", "color": "grey"}}>Category: {category}</div>
+       <div><a href="javascript:;" onClick={cancelPayment}>Cancel payment </a></div>
     </div>
   )
 }
@@ -42,13 +42,21 @@ class AccountPage extends Component {
   }
 
   render() {
-    const account = _get(this.props, `response.account[0]`)
-    const { recurringEvents, id } = account
+    const accountId = window.location.hash.split("=").pop()
+    const accounts = _get(this.props, `response.account`)
+    const account = accounts.filter((element) => {
+      if(element.id == accountId){
+        return element
+      }
+    })
+    const { recurringEvents, id } = account[0]
     return (
         <BasePage>
             <div className="mui-container">
-              <div style={{"fontWeight": "bold", "margin": "1rem 0"}}>Your Recurring Payments</div>
-              <RecurringEvents recurringEvents={recurringEvents} account={account} onCancel={this.cancelPayment} />
+              <div style={{"fontWeight": "bold", "margin": "1rem 0", "textAlign": "center"}}>Recurring Payments</div>
+              {recurringEvents && recurringEvents.length ? <RecurringEvents recurringEvents={recurringEvents} account={account[0]} onCancel={this.cancelPayment} /> :
+              `You have no recurring payments on this card` }
+              
             </div>
         </BasePage>
     );
