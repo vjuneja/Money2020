@@ -56,4 +56,43 @@ function getAccountsRequest(cobrandSession, userSession) {
     }
 }
 
-module.exports = {cobrandLoginRequest, userLoginRequest, getAccountsRequest}
+function getRecurringEventsRequest(cobrandSession, userSession) {
+    return {
+        "method":"GET",
+        "baseURL": settings.yodlee.endpoint,
+        "url":"/accounts/recurringEvents",
+        "headers": {
+            "Authorization":`cobSession=${cobrandSession},userSession=${userSession}`,
+            "Content-Type":"application/json",
+            "Api-Version": "1.1",
+            "Cobrand-Name": settings.yodlee.cobrandName
+        }
+    }
+}
+
+function getBalancesRequest(fromDate, toDate, cobrandSession, userSession) {
+    fromDate = fromDate?fromDate:"2018-01-01"
+    toDate = toDate?toDate:"2018-10-21"
+    params = {            
+        "interval":"D",
+    }
+
+    return {
+        "method":"GET",
+        "baseURL": settings.yodlee.endpoint,
+        "url":"/accounts/balances",
+        "params":{
+            "interval":"D",
+            "fromDate":fromDate,
+            "toDate": toDate
+        },
+        "headers": {
+            "Authorization":`cobSession=${cobrandSession},userSession=${userSession}`,
+            "Content-Type":"application/json",
+            "Api-Version": "1.1",
+            "Cobrand-Name": settings.yodlee.cobrandName
+        }
+    }
+}
+
+module.exports = {cobrandLoginRequest, userLoginRequest, getAccountsRequest, getRecurringEventsRequest, getBalancesRequest}
