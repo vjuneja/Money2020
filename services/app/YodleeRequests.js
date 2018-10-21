@@ -22,7 +22,6 @@ function cobrandLoginRequest(){
 
 
 function userLoginRequest(cobrandSession) {
-    console.log(cobrandSession)
     return {
         "method":"POST",
         "baseURL": settings.yodlee.endpoint,
@@ -43,4 +42,18 @@ function userLoginRequest(cobrandSession) {
     }
 }
 
-module.exports = {cobrandLoginRequest, userLoginRequest}
+function getAccountsRequest(cobrandSession, userSession) {
+    return {
+        "method":"GET",
+        "baseURL": settings.yodlee.endpoint,
+        "url":"/accounts",
+        "headers": {
+            "Authorization":`cobSession=${cobrandSession},userSession=${userSession}`,
+            "Content-Type":"application/json",
+            "Api-Version": "1.1",
+            "Cobrand-Name": settings.yodlee.cobrandName
+        }
+    }
+}
+
+module.exports = {cobrandLoginRequest, userLoginRequest, getAccountsRequest}
