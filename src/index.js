@@ -8,10 +8,6 @@ import Transaction from './components/transaction'
 import 'babel-polyfill'
 import { getAccountBalances } from './scripts/balances'
 
-async function callGetAccountBalances(...args) {
-    return getAccountBalances(...args)
-}
-
 class App extends React.Component {
     constructor() {
         super()
@@ -23,11 +19,12 @@ class App extends React.Component {
 
     componentWillMount() {
         const lastMonth = moment(this.state.today).subtract(1, 'months').format('YYYY-MM-DD')
+        const nextMonth = moment(this.state.today).add(1, 'months').format('YYYY-MM-DD')
 
-        callGetAccountBalances(lastMonth, 60)
+        getAccountBalances(lastMonth, nextMonth)
             .then(response => this.setState({
                 ...this.state,
-                response
+                response: response.data
             }))
     }
 
