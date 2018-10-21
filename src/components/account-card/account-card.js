@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import OverCharge from '../over-charge'
+import { formatter } from '../../utils'
 import "./account-card.css"
-
-const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2
-})
 
 class AccountCard extends Component {
   constructor() {
@@ -14,11 +10,15 @@ class AccountCard extends Component {
   }
 
   render() {
-    const { name, num, amount, ...rest } = this.props
+    const { name, num, amount, overCharge, ...rest } = this.props
     return (
-        <div className="account-card" {...rest}>
+        <div className="account-card mui-panel" {...rest}>
             <div className="mui--text-caption"><b>{name}</b>...x-{num.padStart(4, '0')}</div>
             <div className="mui--text-title">{formatter.format(amount)}</div>
+            {overCharge && <OverCharge date={overCharge.date} amount={overCharge.amount}/>}
+            <span className="account-card--icon">
+                <i className="fas fa-chevron-right"></i>
+            </span>
         </div>
     );
   }

@@ -8,11 +8,11 @@ const EMI = ()=> {
     return (
         <div>
             <legend>Provide EMI details</legend>
-            <div class="mui-textfield">
+            <div className="mui-textfield">
                 <input type="text" placeHolder="Amount"/>
                 <label>EMI Amount</label>
             </div>
-            <div class="mui-textfield">
+            <div className="mui-textfield">
                 <input type="text" placeHolder="Months"/>
                 <label>Number of months</label>
             </div>
@@ -22,7 +22,7 @@ const EMI = ()=> {
 
 const Accounts = () => {
     return (
-        <div class="mui-select">
+        <div className="mui-select">
             <select>
                 <option>Bank of America - Checking</option>
                 <option>Chase Saphire Reserve - 5544</option>
@@ -36,7 +36,7 @@ const Accounts = () => {
 
 const OTP = () => {
     return (
-        <div class="mui-textfield">
+        <div className="mui-textfield">
             <input type="text" placeHolder="Final amount"/>
             <label>Enter final payment amount</label>
         </div>
@@ -64,22 +64,22 @@ export default class Transaction extends React.Component {
             <div>
                 <Header />
                 <div className="mui-panel">
-                <div style={{"font-weight": "bold", "font-size": "16px", "marginBottom": ".5rem"}}>Add a transaction</div>
-                    <div class="mui-dropdown" style={{"display": "block"}}>
-                        <button class="mui-btn mui-btn--primary" data-mui-toggle="dropdown" style={{"width": "100%"}}>
+                <div style={{"fontWeight": "bold", "fontSize": "16px", "marginBottom": ".5rem"}}>Add a transaction</div>
+                    <div className="mui-dropdown" style={{"display": "block"}}>
+                        <button className="mui-btn mui-btn--primary" data-mui-toggle="dropdown" style={{"width": "100%"}}>
                              {this.state.txnType ? this.state.txnType: `Type of payment`} 
-                            <span class="mui-caret"></span>
+                            <span className="mui-caret"></span>
                         </button>
-                        <ul class="mui-dropdown__menu" style={{"width": "100%"}}>
+                        <ul className="mui-dropdown__menu" style={{"width": "100%"}}>
                             <li><a href="javascript:;" onClick={this.selectTranaction.bind(this)} data-txn-type="EMI">EMI</a></li>
                             <li><a href="javascript:;" onClick={this.selectTranaction.bind(this)} data-txn-type="OTP">One Time Payment</a></li>
                         </ul>
                      </div>
-                     <form class="mui-form">   
+                     <form className="mui-form">
                         {this.state.txnType === `EMI`? <EMI />  :null}
                         {this.state.txnType === `OTP`? <OTP />  :null}
                         {this.state.txnType ? <Accounts /> : null }
-                        {this.state.txnType ? <button type="submit" class="mui-btn mui-btn--raised">Submit</button>: null }
+                        {this.state.txnType ? <button type="submit" className="mui-btn mui-btn--raised">Submit</button>: null }
                     </form>
                 </div>
             </div>)
