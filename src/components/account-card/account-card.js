@@ -11,6 +11,7 @@ class AccountCard extends Component {
 
   render() {
     const { name, num, amount, overCharge, ...rest } = this.props
+
     return (
         <div className="account-card mui-panel" {...rest}>
             <div className="mui--text-caption"><b>{name}</b>...x-{num.padStart(4, '0')}</div>

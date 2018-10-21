@@ -25,6 +25,7 @@
     "axios": "^0.18.0",
     "babel-cli": "^6.26.0",
     "babel-loader": "^8.0.4",
+    "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "css-loader": "^1.0.0",

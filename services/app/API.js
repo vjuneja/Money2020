@@ -1,7 +1,7 @@
 const apis = require('./Service')
 
- function callApi(params, callback) {
-    apis().then((response) => {
+ function callApi(apiName, params, callback) {
+    apis[apiName](params).then((response) => {
         callback(response)
     })
 }

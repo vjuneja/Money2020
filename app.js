@@ -22,7 +22,7 @@ app.get('/', function(req, res, next) {
   res.sendFile(path.join(__dirname, './dist', 'index.html'))
 });
 app.get('/api/:apiName', function(req, res, next){
-  api(req.params, (response)=> {
+  api(req.params.apiName, req.query, (response)=> {
     res.contentType("application/json")
     res.send(response)
     res.end()
