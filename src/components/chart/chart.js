@@ -10,7 +10,7 @@ import { getTotalBalance, getAggregatedTotalBalance } from '../../scripts/balanc
 import {formatterAbbrev} from '../../utils'
 import "./chart.css"
 
-const buildOptions = (balances, aggregateChartData) => {
+const buildOptions = (chartData = {} , aggregateChartData = {}) => {
     return {
         chart: {
             type: "line",
@@ -43,7 +43,6 @@ const buildOptions = (balances, aggregateChartData) => {
         },
         xAxis: {
             type: 'datetime',
-            // gridLineColor: 'transparent',
             crosshair: {
                 width: 3,
                 color: 'lightgray'
@@ -70,15 +69,15 @@ const buildOptions = (balances, aggregateChartData) => {
         },
         series: [{
             name: "balance",
-            data: Object.keys(balances).filter(key => moment(key) <= moment())
-                .map(key => [moment(key).valueOf(), balances[key]]),
+            data: Object.keys(chartData).filter(key => moment(key) <= moment())
+                .map(key => [moment(key).valueOf(), chartData[key]]),
             color: "lightgreen",
             lineWidth: 3
         },
         {
             showInLegend: false,
-            data: Object.keys(balances).filter(key => moment(key) > moment())
-                .map(key => [moment(key).valueOf(), balances[key]]),
+            data: Object.keys(chartData).filter(key => moment(key) > moment())
+                .map(key => [moment(key).valueOf(), chartData[key]]),
             dashStyle: "shortdash",
             color: "lightgreen",
             lineWidth: 3
@@ -104,27 +103,7 @@ class Chart extends Component {
     }
 
     getOptions() {
-        return buildOptions(this.state.chartData, this.state.aggregateChartData)
-    }
-
-    componentDidMount() {
-        const { startDate="2018-08-01", endDate="2018-11-31" } = this.props
-        Promise.all([
-            getTotalBalance(startDate, endDate), 
-            getAggregatedTotalBalance(startDate, endDate)
-        ]).then((responses) => {
-            this.setState({
-                chartData: responses[0],
-                aggregateChartData: responses[1]
-            })
-        })
-        
-        // getTotalBalance(startDate, endDate).then((response) => {
-        //     this.setState({
-        //         chartData: response
-        //     })
-        // })
-        document.getElementsByClassName("highcharts-credits")[0].remove()
+        return buildOptions(this.props.chartData, this.props.aggregateChartData)
     }
 
     render() {
@@ -140,8 +119,8 @@ class Chart extends Component {
 }
 
 Chart.propTypes = {
-    startDate: PropTypes.string,
-    endDate: PropTypes.string
+    chartData: PropTypes.string,
+    aggregateChartData: PropTypes.string
 }
 
 export default Chart;

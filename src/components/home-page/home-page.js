@@ -15,11 +15,13 @@ class HomePage extends Component {
     const {
       response,
       today,
+      chartData,
+      aggregateChartData
     } = this.props
     return (
       <BasePage>
         <div>
-            <Chart test="chart"/>
+            <Chart chartData={chartData} aggregateChartData={aggregateChartData}/>
             {response && <Accounts
               accounts={response.account}
               today={today}
@@ -40,6 +42,8 @@ class HomePage extends Component {
 
 HomePage.propTypes = {
   response: PropTypes.object,
+  chartData: PropTypes.object,
+  aggregateChartData: PropTypes.object
 }
 
 export default HomePage;
