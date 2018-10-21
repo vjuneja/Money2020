@@ -11,3 +11,7 @@ export async function getRecurringEvents() {
 export async function getBalances(fromDate, toDate) {
     return await axios.create().request("/api/getBalances?fromDate=" + fromDate + "&toDate=" + toDate)
 }
+
+export async function getAverageBalances(fromDate, toDate) {
+    return await axios.create().request("/api/getAverageBalances?fromDate=" + fromDate + "&toDate=" + toDate)
+}

@@ -6,11 +6,11 @@ import PropTypes from "prop-types";
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import moment from 'moment'
-import { getTotalBalance } from '../../scripts/balances'
+import { getTotalBalance, getAggregatedTotalBalance } from '../../scripts/balances'
 import {formatterAbbrev} from '../../utils'
 import "./chart.css"
 
-const buildOptions = (balances, chartWidth) => {
+const buildOptions = (balances, aggregateChartData) => {
     return {
         chart: {
             type: "line",
@@ -23,14 +23,19 @@ const buildOptions = (balances, chartWidth) => {
             backgroundColor: 'transparent',
             crosshairs: [true],
             positioner: () => {
-                return { x: chartWidth, y: 0 };
+                return { x: 250, y: 0 };
             },
+            useHTML: true,
             formatter: function () {
-                const colorClass = this.y > 0 ? 'green' : 'red' 
+                if(this.series.name == 'aggregate')
+                    return false ;
+                const colorClass = this.y > 0 ? 'darkgreen' : '#f23614' 
                 return `
-                    <div class="mui--text-title ${colorClass}">${formatterAbbrev.format(this.y)}</div><br/>
-                    <div>${moment(this.x).format('YY-MM-DD')}
-                    </div>`;
+                <table>
+                    <tr><td class="mui--text-title" style="font-weight:bold; color:${colorClass}">
+                        ${formatterAbbrev.format(this.y)}</td></tr>
+                    <tr><td style="text-align: center">${moment(this.x).format('YYYY, MMM DD')}</td></tr>
+                </table>`;
             }
         },
         title: {
@@ -38,7 +43,7 @@ const buildOptions = (balances, chartWidth) => {
         },
         xAxis: {
             type: 'datetime',
-            gridLineColor: 'transparent',
+            // gridLineColor: 'transparent',
             crosshair: {
                 width: 3,
                 color: 'lightgray'
@@ -46,60 +51,79 @@ const buildOptions = (balances, chartWidth) => {
             plotLines: [{
                 color: 'lightblue',
                 value: moment(Date()).valueOf(),
-                width: 2
+                width: 1
             }]
         },
         legend: {
-            enabled: false
+            enabled: true
         },
         yAxis: {
-            lineWidth: 0,
-            minorGridLineWidth: 0,
             gridLineColor: 'transparent',
             plotLines: [{
                 color: 'red',
                 value: 0,
-                width: 2
+                width: 1
             }],
             title: {
                 text: ''
             }
         },
         series: [{
+            name: "balance",
             data: Object.keys(balances).filter(key => moment(key) <= moment())
                 .map(key => [moment(key).valueOf(), balances[key]]),
-            color: "lightblue"
+            color: "lightgreen",
+            lineWidth: 3
         },
         {
+            showInLegend: false,
             data: Object.keys(balances).filter(key => moment(key) > moment())
                 .map(key => [moment(key).valueOf(), balances[key]]),
-            dashStyle: 'shortdash',
-            color: "lightblue"
+            dashStyle: "shortdash",
+            color: "lightgreen",
+            lineWidth: 3
+        },
+        {
+            name: "aggregate",
+            data: Object.keys(aggregateChartData)
+                .map(key => [moment(key).valueOf(), aggregateChartData[key]]),
+            color: "lightgray",
+            lineWidth: 1
         }],
     }
 }
 
-class HomePage extends Component {
+class Chart extends Component {
     constructor() {
         super();
         this.state = {
             title: "chart",
             chartData: {},
-            chartWidth: 250
+            aggregateChartData: {}
         };
     }
 
     getOptions() {
-        return buildOptions(this.state.chartData, this.state.chartWidth)
+        return buildOptions(this.state.chartData, this.state.aggregateChartData)
     }
 
     componentDidMount() {
-        getTotalBalance("2018-08-01", "2018-11-31").then((response) => {
+        const { startDate="2018-08-01", endDate="2018-11-31" } = this.props
+        Promise.all([
+            getTotalBalance(startDate, endDate), 
+            getAggregatedTotalBalance(startDate, endDate)
+        ]).then((responses) => {
             this.setState({
-                chartData: response,
-                // chartWidth: document.getElementsByClassName("chartContainer").width()
+                chartData: responses[0],
+                aggregateChartData: responses[1]
             })
         })
+        
+        // getTotalBalance(startDate, endDate).then((response) => {
+        //     this.setState({
+        //         chartData: response
+        //     })
+        // })
         document.getElementsByClassName("highcharts-credits")[0].remove()
     }
 
@@ -115,8 +139,9 @@ class HomePage extends Component {
     }
 }
 
-HomePage.propTypes = {
-    test: PropTypes.string
+Chart.propTypes = {
+    startDate: PropTypes.string,
+    endDate: PropTypes.string
 }
 
-export default HomePage;
+export default Chart;
