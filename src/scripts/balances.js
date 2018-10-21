@@ -42,7 +42,8 @@ export const getAccountBalances = (fromDate, days) => {
     };
     var getRecurringEventsResult = getRecurringEvents();
     // Merge account details, balances, and recurring events into account
-    for (var account in getAccountsResult.account) {
+    getAccountsResult.account.forEach(account => {
+        var accountId = account.id;
         var accountBalances = findAccountElement(getAccountBalanceResult, accountId);
         if (accountBalances) {
             account.balances = accountBalances.balances;
@@ -52,16 +53,14 @@ export const getAccountBalances = (fromDate, days) => {
         if (accountRecurringEvents) {
             account.recurringEvents = accountRecurringEvents.recurringEvents;
         }
-    }
-
+    });
+    return getAccountsResult;
 }
 
 function findAccountElement(result, accountId) {
-    for (var account in result.account) {
-        if (account.id == accountId) {
-            return account;
-        }
-    }
+    return result.account && result.account.find(account => {
+        return account.id == accountId;
+    });
 }
 
 function getAccounts() {
@@ -132,7 +131,6 @@ function createBankAsset(accountId, startDate, days, startingBalance) {
         'CONTAINER': 'bank',
         'id': accountId,
         'isAsset': true,
-        'balances': balances
     };
     var balances = [];
     for (var i = 0; i < days; i++) {
@@ -147,6 +145,7 @@ function createBankAsset(accountId, startDate, days, startingBalance) {
         })
 
     }
+    account.balances = balances;
     // Add recurring transactions
     account = addManualTransaction(account, '2018-10-05', 1500, 30);
     account = addManualTransaction(account, '2018-10-03', -300, 14);
