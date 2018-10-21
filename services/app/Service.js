@@ -37,10 +37,13 @@ async function getAverageBalances(params) {
     const balances = await getBalances(params)
     return {"account": balances.account.map((account)=> ({
         ...account,
-        balances: account.balances.map(balance => {
+        balances: account.balances.map(bal => {
             return {
-                ...balance,
-                amount: balance.amount + random()
+                ...bal,
+                balance: {
+                    amount: bal.balance.amount + random(),
+                    currency: bal.balance.currency
+                }
             }
         })
     }))}
@@ -49,11 +52,12 @@ async function getAverageBalances(params) {
 var seed = 1;
 function random() {
     var x = Math.sin(seed++) * 10000;
-    return (x - Math.floor(x))*500;
+    let rand = (x - Math.floor(x))*500;
+    return rand;
 }
 module.exports = {
     getAccounts: getAccounts, //http://localhost:3000/api/getAccounts
     getRecurringEvents: getRecurringEvents, //http://localhost:3000/api/getRecurringEvents
     getBalances: getBalances, //http://localhost:3000/api/getBalances?fromDate=2018-01-10&toDate=2018-12-12
-    getAverageBalances: getAverageBalances
+    getAverageBalances: getAverageBalances //http://localhost:3000/api/getAverageBalances
 }
