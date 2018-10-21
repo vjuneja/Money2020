@@ -17,6 +17,7 @@ class App extends React.Component {
             aggregateChartData: {},
             today: moment(Date()).format('YYYY-MM-DD')
         }
+        this.addTransaction = this.addTransaction.bind(this)
     }
 
     componentWillMount() {
@@ -36,9 +37,26 @@ class App extends React.Component {
         })
     }
 
+    addTransaction(i, newAccount) {
+        const currentAccount = this.state.response.account
+        this.setState({
+            ...this.state,
+            response: {
+                account: [
+                    ...currentAccount.slice(0, i),
+                    newAccount,
+                    ...currentAccount.slice(i + 1),                    
+                ]
+            }
+        })
+    }
+
     render() {
         console.log('state', this.state)
-        return this.props.render(this.state)
+        return this.props.render(
+            this.state,
+            { addTransaction: this.addTransaction }
+        )
     }
 }
 
@@ -47,8 +65,9 @@ wrapper
     ? ReactDOM.render(
         <App
             render={
-                state => <Router
+                (state, actions) => <Router
                     {...state}
+                    {...actions}
                     paths={{
                         'home': HomePage,
                         'transaction': Transaction,
