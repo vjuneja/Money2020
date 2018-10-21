@@ -6,7 +6,7 @@ import BasePage from '../base-page'
 import { formatterFull } from '../../utils'
 import { cancelRecurringTransaction } from '../../scripts/balances'
 import Chart from '../chart'
-
+import './account-page.css'
 
 const RecurringEvent = ({ recurringPayment, account, update }) => {
   const { amount, description, category, id} = recurringPayment
@@ -31,7 +31,7 @@ const RecurringEvents = ({recurringEvents, account, update}) => {
   if(!recurringEvents || !recurringEvents.length) return null
   const events = []
   recurringEvents.forEach(recurringPayment => {
-    events.push(<RecurringEvent recurringPayment={recurringPayment} account={account} update={update}/>)
+    events.push(<RecurringEvent recurringPayment={recurringPayment} account={account} update={update} key={recurringPayment.id}/>)
   });
   return events
 }
