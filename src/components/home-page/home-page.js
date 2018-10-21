@@ -28,7 +28,7 @@ class HomePage extends Component {
           onClick={routeTo('transaction')}
         >
           Add transaction
-        </button>     
+        </button>
       </BasePage>
     );
   }
