@@ -64,7 +64,7 @@ export default class Transaction extends React.Component {
             <div>
                 <Header />
                 <div className="mui-panel">
-                <div style={{"font-weight": "bold", "font-size": "16px", "marginBottom": ".5rem"}}>Add a transaction</div>
+                <div style={{"font-weight": "bold", "fontSize": "16px", "marginBottom": ".5rem"}}>Add a transaction</div>
                     <div class="mui-dropdown" style={{"display": "block"}}>
                         <button class="mui-btn mui-btn--primary" data-mui-toggle="dropdown" style={{"width": "100%"}}>
                              {this.state.txnType ? this.state.txnType: `Type of payment`} 
