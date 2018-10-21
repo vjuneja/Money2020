@@ -1,13 +1,13 @@
 import React from 'react'
 import { routeTo } from '../router'
-
+import './header.css'
 
 const Header = ()=> {
-    return <div className="mui-appbar">
+    return <div className="mui-appbar header">
         <table width="100%">
             <tbody>
                 <tr style={{"verticalAlign": "middle"}}>
-                    <td className="mui--appbar-height" style={{"fontSize": "18px", "fontWeight": "bold"}}>Equalizer</td>
+                    <td className="mui--appbar-height" style={{"fontSize": "18px", "fontWeight": "bold"}}>Spendwise</td>
                     <td
                         className="mui--appbar-height"
                         align="right"
