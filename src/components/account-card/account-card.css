@@ -1,6 +1,6 @@
 .account-card {
     position: relative;
-    padding: 0.5rem;
+    padding: 1rem;
     margin-bottom: 0.5rem;
 }
 
@@ -15,4 +15,12 @@
     height: 100%;
     display: flex;
     align-items: center;
+}
+
+.account-card--over-charge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-right: 2.5rem;
+    height: 100%;
 }
