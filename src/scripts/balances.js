@@ -8,7 +8,7 @@
 export const getTotalBalance = (fromDate, days) => {
 
     // TODO Get this from service API
-    const accountBalances = getAccountBalances();
+    const accountBalances = getAccountBalances(fromDate, days);
 
     // Aggregate into total by date
     const aggregatedData = {}
