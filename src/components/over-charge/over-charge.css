@@ -1,0 +1,14 @@
+
+.over-charge {
+    background-image: linear-gradient(to right, white, lavender);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    padding-left: 2rem;
+    color: grey;
+}
+
+.over-charge--amount {
+    color: #f23614;
+}
